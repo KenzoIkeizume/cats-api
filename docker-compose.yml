@@ -1,0 +1,30 @@
+version: '3.3'
+volumes:
+  volume-test-mysql: {}
+services:
+  db:
+    image: mysql:5.7
+    container_name: volume-test-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'cat'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'admin'
+      MYSQL_ROOT_PASSWORD: 'admin'
+    volumes:
+      - volume-test-mysql:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+
+  app:
+    container_name: test-app
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    ports:
+      - '5000:5000'
+    network_mode: 'host'
+    depends_on:
+      - db
